@@ -1,0 +1,125 @@
+/* style.scss */
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.2;
+  min-width: 320px;
+  -webkit-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  text-size-adjust: none;
+  background: #12a2d9;
+  color: white;
+  font-size: 16px; }
+
+.header {
+  text-align: center;
+  padding: 32px 16px; }
+  .header h1 {
+    font-size: 80px;
+    margin: 16px 0 8px; }
+
+.user img {
+  display: inline-block;
+  height: 80px;
+  width: 80px;
+  border: 3px solid white;
+  border-radius: 50%; }
+
+.date {
+  font-size: 32px;
+  font-weight: bold; }
+  .date .date-curr {
+    display: inline-block;
+    margin: 0 8px; }
+  .date .date-prev, .date .date-next {
+    display: inline-block;
+    vertical-align: -8px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.3); }
+    .date .date-prev:hover, .date .date-next:hover {
+      transition: all .25s ease-out;
+      background: white;
+      box-shadow: -4px 4px 0 rgba(0, 0, 0, 0.3); }
+      .date .date-prev:hover .icon, .date .date-next:hover .icon {
+        fill: #0c7197; }
+
+.pie-chart {
+  text-align: center;
+  padding: 32px 16px; }
+
+@-webkit-keyframes castShadow {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.3); }
+
+  100% {
+    box-shadow: -24px 24px 0 rgba(0, 0, 0, 0.3); } }
+
+@-moz-keyframes castShadow {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.3); }
+
+  100% {
+    box-shadow: -24px 24px 0 rgba(0, 0, 0, 0.3); } }
+
+@-ms-keyframes castShadow {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.3); }
+
+  100% {
+    box-shadow: -24px 24px 0 rgba(0, 0, 0, 0.3); } }
+
+@keyframes castShadow {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.3); }
+
+  100% {
+    box-shadow: -24px 24px 0 rgba(0, 0, 0, 0.3); } }
+
+.pie-wrapper {
+  display: inline-block;
+  height: 320px;
+  width: 320px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: -24px 24px 0 rgba(0, 0, 0, 0.3);
+  position: relative;
+  padding: 32px;
+  animation: castShadow linear 0.65s 1;
+  -moz-animation: castShadow linear 0.65s 1;
+  -webkit-animation: castShadow linear 0.65s 1;
+  animation-delay: 0;
+  -moz-animation-delay: 0;
+  /* Firefox */
+  -webkit-animation-delay: 0;
+  /* Safari and Chrome */
+  -o-animation-delay: 0;
+  /* Opera */
+  animation-timing-function: ease-out;
+  -moz-animation-timing-function: ease-out;
+  /* Firefox */
+  -webkit-animation-timing-function: ease-out;
+  /* Safari and Chrome */
+  -o-animation-timing-function: ease-out;
+  /* Opera */ }
+
+.pie {
+  border: 3px solid #c7c7c7;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%; }
+
+.icon {
+  width: 40px;
+  height: 40px;
+  fill: white;
+  display: block; }
