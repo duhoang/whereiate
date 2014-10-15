@@ -10,6 +10,25 @@
 
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="js/underscore-min.js" charset="utf-8"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<script>
+
+	var url = window.location;
+	var a = $('<a>', { href:url } )[0];
+	var token = a.hash.split('=')[1];
+	
+	if (token) {
+		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare", function(data){
+			initApp(data);
+		});
+	}
+	
+	function initApp() {
+		$("body").addClass("show-user");
+	}
+	
+</script>
 
 </head>
 
@@ -34,10 +53,14 @@
 	<path class="path2" d="M15.998 16.536l12.959-8.549c-0.464-0.786-1.311-1.32-2.29-1.32h-21.333c-1.007 0-1.873 0.565-2.327 1.389l12.991 8.481z" />
 </g>
 </defs></svg>
+
 	<div class="header">
+    	<div class="foursquare-connect">
     	<a href="https://foursquare.com/oauth2/authenticate?client_id=3WJ1E4CGYGPE0PDTABBAIOBRP02Z3TOCM2MVUVFSN5FKY4JE&response_type=token&redirect_uri=http://duhoang.github.io/whereiate/">
-            	<img src="img/connect-blue.png" />
+            	<img src="img/foursquare-icon.png" />
+                <span>Connect to <strong>Foursquare</strong></span>
             </a>
+        </div>
 	 	<div class="user">
         	<img src="img/me.jpg"/>
         </div>
