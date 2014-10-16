@@ -27,6 +27,34 @@ html, body {
     font-size: 80px;
     margin: 16px 0 8px; }
 
+@-webkit-keyframes showUser {
+  0% {
+    transform: scale(0); }
+  50% {
+    transform: scale(1.1); }
+  100% {
+    transform: scale(1); } }
+@-moz-keyframes showUser {
+  0% {
+    transform: scale(0); }
+  50% {
+    transform: scale(1.1); }
+  100% {
+    transform: scale(1); } }
+@-ms-keyframes showUser {
+  0% {
+    transform: scale(0); }
+  50% {
+    transform: scale(1.1); }
+  100% {
+    transform: scale(1); } }
+@keyframes showUser {
+  0% {
+    transform: scale(0); }
+  50% {
+    transform: scale(1.1); }
+  100% {
+    transform: scale(1); } }
 .user {
   display: none; }
   .user img {
@@ -37,6 +65,25 @@ html, body {
     border-radius: 50%; }
   .show-user .user {
     display: block; }
+    .show-user .user img {
+      transform: scale(1);
+      animation: showUser linear 0.45s 1;
+      -moz-animation: showUser linear 0.45s 1;
+      -webkit-animation: showUser linear 0.45s 1;
+      animation-delay: 0;
+      -moz-animation-delay: 0;
+      /* Firefox */
+      -webkit-animation-delay: 0;
+      /* Safari and Chrome */
+      -o-animation-delay: 0;
+      /* Opera */
+      animation-timing-function: ease-out;
+      -moz-animation-timing-function: ease-out;
+      /* Firefox */
+      -webkit-animation-timing-function: ease-out;
+      /* Safari and Chrome */
+      -o-animation-timing-function: ease-out;
+      /* Opera */ }
 
 .date {
   font-size: 32px;
@@ -121,23 +168,32 @@ html, body {
   display: block; }
 
 .foursquare-connect {
-  margin: 16px 0 32px 0;
+  margin: 16px 0 36px 0;
   text-align: center; }
   .foursquare-connect img {
     height: 100%;
-    vertical-align: -18px; }
+    vertical-align: -16px; }
   .foursquare-connect a {
     color: #12a2d9;
-    height: 48px;
-    line-height: 48px;
+    height: 44px;
+    line-height: 44px;
     border-radius: 4px;
     overflow: hidden;
     text-decoration: none;
     display: inline-block;
     background: #ffffff;
-    box-shadow: -3px 3px 0 rgba(0, 0, 0, 0.3); }
+    box-shadow: -3px 3px 0 rgba(0, 0, 0, 0.3);
+    transition: scale .25s; }
+    .foursquare-connect a:active {
+      background: #e2e2e2;
+      color: #a7a7a7;
+      box-shadow: none;
+      box-shadow: -1px 1px 0 rgba(0, 0, 0, 0.3);
+      transform: scale(0.9); }
+      .foursquare-connect a:active img {
+        opacity: .4; }
   .foursquare-connect span {
-    margin: 0 16px 0 8px; }
+    margin: 0 20px 0 4px; }
   .show-user .foursquare-connect {
     display: none; }
 
