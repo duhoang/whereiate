@@ -95,6 +95,19 @@ html, body {
 	}
 }
 
+
+@include keyframes(showUser) {
+	0% {
+		transform: scale(0);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
 .user {
 	display:none;
 	
@@ -104,10 +117,17 @@ html, body {
 		width: 80px;
 		border: 3px solid $white;
 		border-radius:50%;
+		
+		
 	}
 	
 	.show-user & {
 		display: block;
+		
+		img {
+			transform: scale(1);
+			@include css-animate(showUser, .45s, 1, 0, ease-out);
+		}
 	}
 }
 
@@ -177,27 +197,43 @@ html, body {
 	display: block;
 }
 
+
+
 .foursquare-connect {
-	margin: 16px 0 32px 0;
+	margin: 16px 0 36px 0;
 	text-align:center;
 	img {
 		height: 100%;
-		vertical-align: -18px;
+		vertical-align: -16px;
 	}
 	
 	a {
 		color: $blue;
-		height: 48px;
-		line-height: 48px;
+		height: 44px;
+		line-height: 44px;
 		border-radius: 4px;
 		overflow:hidden;
 		text-decoration: none;
 		display: inline-block;
 		background: $white;
 		box-shadow: -3px 3px 0 rgba($black, .3);
+		transition: scale .25s;
+		
+		&:active {
+			background: $gray2;
+			color: $gray4;
+			box-shadow: none;
+			box-shadow: -1px 1px 0 rgba($black, .3);
+			transform: scale(.9);
+			
+			img {
+				opacity: .4;
+				
+			}
+		}	
 	}
 	span {
-		margin: 0 16px 0 8px;
+		margin: 0 20px 0 4px;
 	}
 	
 	.show-user & {
