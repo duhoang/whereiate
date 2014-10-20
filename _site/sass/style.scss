@@ -240,3 +240,14 @@ html, body {
 		display: none;
 	}
 }
+
+.pie-svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	path {
+		stroke: $white;
+		stroke-width: 1px;
+	}
+}

@@ -197,4 +197,12 @@ html, body {
   .show-user .foursquare-connect {
     display: none; }
 
+.pie-svg {
+  position: absolute;
+  top: 0;
+  left: 0; }
+  .pie-svg path {
+    stroke: #ffffff;
+    stroke-width: 1px; }
+
 /*# sourceMappingURL=style.css.map */
