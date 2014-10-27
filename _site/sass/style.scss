@@ -22,6 +22,93 @@ $bp-regular:1024px;
 $bp-wide:1280px;
 $bp-xwide:1440px;
 
+$p-teal: #1ABC9C;
+$p-teal-dark: #16A085;
+$p-green: #2ECC71;
+$p-green-dark: #27AE60;
+$p-blue: #3498DB;
+$p-blue-dark: #2980B9;
+$p-purple: #9B59B6;
+$p-purple-dark:#8E44AD;
+$p-gray: #34495E;
+$p-gray-light: #64798E;
+$p-gray-dark:#2C3E50;
+$p-yellow: #F1C40F;
+$p-yellow-dark:#F39C12;
+$p-orange: #E67E22;
+$p-orange-dark :#D35400;
+$p-red: #E74C3C;
+$p-red-dark: #C0392B;
+$p-pink: #ec95d8;
+$p-brown: #AC6D4A;	
+
+.pastel1 {
+    background: $p-teal !important;
+    fill: $p-teal !important;}
+.pastel2{
+    background: $p-green !important;
+    fill: $p-green !important;}
+.pastel3{
+    background: $p-orange !important;
+    fill: $p-orange !important;}
+.pastel4{
+    background: $p-blue !important;
+    fill: $p-blue !important;}
+.pastel5{
+    background: $p-purple !important;
+    fill: $p-purple !important;}
+.pastel6{
+    background: $p-pink !important;
+    fill: $p-pink !important;}
+.pastel7{
+    background: $p-yellow !important;
+    fill: $p-yellow !important;}
+.pastel8{
+    background: $p-teal-dark !important;
+    fill: $p-teal-dark !important;}
+.pastel9{
+    background: $p-red !important;
+    fill: $p-red !important;}
+.pastel10{
+    background: $p-yellow-dark !important;
+    fill: $p-yellow-dark !important;}
+
+.pastel11{
+    background: $p-brown !important;
+    fill: $p-brown !important;}
+.pastel12{
+    background: $p-orange-dark !important;
+    fill: $p-orange-dark !important;}
+.pastel13{
+    background: $p-teal-dark !important;
+    fill: $p-teal-dark !important;}
+.pastel14{
+    background: $p-red-dark !important;
+    fill: $p-red-dark !important;}
+
+
+
+.text-pastel1{
+    color: $p-teal;}
+.text-pastel2{
+    color: $p-green;}
+.text-pastel3{
+    color: $p-orange;}
+.text-pastel4{
+    color: $p-blue;}
+.text-pastel5{
+    color: $p-purple;}
+.text-pastel6{
+    color: $p-pink;}
+.text-pastel7{
+    color: $p-yellow;}
+.text-pastel8{
+    color: $p-teal-dark;}
+.text-pastel9{
+    color: $p-red;}
+.text-pastel10{
+    color: $p-yellow-dark;}
+
 
 * {
 	box-sizing:border-box;
@@ -90,8 +177,20 @@ html, body {
 	padding: 32px 16px;
 	
 	h1 {
-		font-size:80px;
+		font-size:48px;
 		margin: 16px 0 8px;
+		transition: font-size .25s;
+	}
+
+	@media all and (min-width: $bp-narrow) {
+		h1 {
+			font-size:64px;
+		}
+	}
+	@media all and (min-width: $bp-regular) {
+		h1 {
+			font-size:80px;
+		}
 	}
 }
 
@@ -160,6 +259,20 @@ html, body {
 .pie-chart {
 	text-align:center;
 	padding: 32px 16px;
+	position: relative;
+	transition: width .5s;
+	width: 100%;
+
+	@media all and (min-width: $bp-narrow) {
+		width: 50%;
+
+	}
+
+	@media all and (min-width: $bp-regular) {
+		width: 100%;
+	}
+
+
 }
 
 @include keyframes(castShadow) {
@@ -248,6 +361,86 @@ html, body {
 
 	path {
 		stroke: $white;
-		stroke-width: 1px;
+		stroke-width: 2px;
 	}
+
+	text {
+		pointer-events: none;
+		font-size: 14px;
+		font-weight: bold;
+		fill: $white;
+	}
+}
+
+@include keyframes(showPieList) {
+	0% {
+		opacity: 0;
+		transform: translate3d(20%, 0, 0);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.pie-list {
+	padding-top: 32px;
+	display: none;
+	text-align: center;
+	.show-user & {
+		display: block;
+		opacity: 1;
+		@include css-animate(showPieList, .35s, 1, 0, ease-out);
+	}
+
+	@media all and (min-width: $bp-narrow) {
+		position: absolute;
+		right: -100%;
+		top: 0;
+		width: 100%;
+		padding-top: 8px;
+
+	}
+	@media all and (min-width: $bp-regular) {
+		right: 0;
+		width: 33%;
+		
+	}
+
+}
+
+.pie-list-header {
+	border-bottom: 1px solid $white;
+	font-weight: bold;
+	padding: 8px 0;
+	margin-bottom: 8px;
+}
+
+
+.pie-list-inner {
+	min-width: 320px;
+	display: inline-block;
+	text-align: left;
+}
+
+.pie-item {
+	padding: 4px 0;
+}
+
+.pie-legend {
+	display: inline-block;
+	height: 24px;
+	width: 24px;
+	border-radius: 50%;
+	border: 2px solid $white;
+	text-align: center;
+	font-weight: bold;
+	line-height: 20px;
+	font-size:13px;
+	padding-right: 1px;
+	vertical-align: 2px
+}
+
+.pie-label {
+	padding-left: 4px;
 }
