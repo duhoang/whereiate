@@ -199,15 +199,14 @@ html, body {
 
 .pie-chart {
   text-align: center;
-  padding: 32px 16px;
   position: relative;
   transition: width .5s;
   width: 100%; }
   @media all and (min-width: 768px) {
-    .pie-chart {
+    .show-user .pie-chart {
       width: 50%; } }
   @media all and (min-width: 1024px) {
-    .pie-chart {
+    .show-user .pie-chart {
       width: 100%; } }
 
 @-webkit-keyframes castShadow {
@@ -231,6 +230,7 @@ html, body {
   100% {
     box-shadow: -24px 24px 0 rgba(0, 0, 0, 0.3); } }
 .pie-wrapper {
+  margin-top: 32px;
   display: inline-block;
   height: 320px;
   width: 320px;
@@ -340,8 +340,76 @@ html, body {
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0); } }
+@-webkit-keyframes showPieStats {
+  0% {
+    opacity: 0;
+    transform: translate3d(-20%, 0, 0); }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0); } }
+@-moz-keyframes showPieStats {
+  0% {
+    opacity: 0;
+    transform: translate3d(-20%, 0, 0); }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0); } }
+@-ms-keyframes showPieStats {
+  0% {
+    opacity: 0;
+    transform: translate3d(-20%, 0, 0); }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0); } }
+@keyframes showPieStats {
+  0% {
+    opacity: 0;
+    transform: translate3d(-20%, 0, 0); }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0); } }
+.content {
+  margin: 16px;
+  position: relative; }
+
+.pie-stats {
+  display: none;
+  text-align: center; }
+  .show-user .pie-stats {
+    display: block;
+    opacity: 1;
+    animation: showPieStats linear 0.35s 1;
+    -moz-animation: showPieStats linear 0.35s 1;
+    -webkit-animation: showPieStats linear 0.35s 1;
+    animation-delay: 0;
+    -moz-animation-delay: 0;
+    /* Firefox */
+    -webkit-animation-delay: 0;
+    /* Safari and Chrome */
+    -o-animation-delay: 0;
+    /* Opera */
+    animation-timing-function: ease-out;
+    -moz-animation-timing-function: ease-out;
+    /* Firefox */
+    -webkit-animation-timing-function: ease-out;
+    /* Safari and Chrome */
+    -o-animation-timing-function: ease-out;
+    /* Opera */ }
+  @media all and (min-width: 768px) {
+    .pie-stats .pie-stats-inner {
+      display: block;
+      margin: 0 16px; } }
+  @media all and (min-width: 1024px) {
+    .pie-stats {
+      position: absolute;
+      left: 0;
+      width: 33%; }
+      .pie-stats .pie-stats-inner {
+        display: inline-block;
+        margin: 0; } }
+
 .pie-list {
-  padding-top: 32px;
+  padding-top: 64px;
   display: none;
   text-align: center; }
   .show-user .pie-list {
@@ -368,32 +436,42 @@ html, body {
     .pie-list {
       position: absolute;
       right: -100%;
-      top: 0;
+      top: 96px;
       width: 100%;
-      padding-top: 8px; } }
+      padding-top: 0; } }
   @media all and (min-width: 1024px) {
     .pie-list {
       right: 0;
-      width: 33%; } }
+      width: 33%;
+      top: 0; } }
 
 .pie-list-header {
-  border-bottom: 1px solid #ffffff;
+  position: relative;
   font-weight: bold;
   padding: 8px 0;
   margin-bottom: 8px; }
+  .pie-list-header:after {
+    content: "";
+    display: block;
+    bottom: 0;
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: #ffffff;
+    opacity: .5; }
 
-.pie-list-inner {
+.pie-list-inner, .pie-stats-inner {
   min-width: 320px;
   display: inline-block;
   text-align: left; }
 
 .pie-item {
-  padding: 4px 0; }
+  padding: 6px 0; }
 
 .pie-legend {
   display: inline-block;
-  height: 24px;
-  width: 24px;
+  height: 14px;
+  width: 14px;
   border-radius: 50%;
   border: 2px solid #ffffff;
   text-align: center;
@@ -401,9 +479,27 @@ html, body {
   line-height: 20px;
   font-size: 13px;
   padding-right: 1px;
-  vertical-align: 2px; }
+  vertical-align: -2px; }
 
 .pie-label {
-  padding-left: 4px; }
+  padding-left: 12px; }
+  .pie-label text {
+    font-size: 10px; }
+  .pie-label strong {
+    margin-left: 8px;
+    font-size: 16px;
+    opacity: .8; }
+
+.pie-stats-item {
+  width: 50%;
+  padding: 4px 8px 32px 8px;
+  text-align: center;
+  font-weight: bold;
+  float: left; }
+  .pie-stats-item strong {
+    font-size: 36px;
+    opacity: .8; }
+  .pie-stats-item .pie-stats-label {
+    font-size: 16px; }
 
 /*# sourceMappingURL=style.css.map */

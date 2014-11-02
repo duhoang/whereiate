@@ -24,13 +24,28 @@ title: What I Ate
 	var data = {% include data %};
 	
 	if (token) {
+		
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(data){
 			if (data.meta === 200) {
+
+				initApp(); //move this into if loop
 				
 			}
-			initApp(data); //move this into if loop
+			
+		});
+
+		$.get("https://api.foursquare.com/v2/users/self/?oauth_token="+token+"&v=20140806", function(user){
+			if (user.meta.code === 200) {
+				$(".user img").attr("src", user.response.user.photo.prefix+"original"+ user.response.user.photo.suffix);
+			
+			}
+			
 		});
 	}
+
+	$(function(){
+		
+	});
 	
 	function initApp() {
 
@@ -39,6 +54,21 @@ title: What I Ate
 		var venues = getTopMetric("categories", function(c){ return c[0].shortName; });
 
 		//var venues = getTopMetric("id");
+
+		d3.select(".pie-stats-inner")
+			.append("div")
+			.classed("pie-stats-item", true)
+			.html(function(){
+
+				return '<strong>'+data.response.checkins.items.length+'</strong><div class="pie-stats-label">Checkins</div>';
+			});
+		d3.select(".pie-stats-inner")
+			.append("div")
+			.classed("pie-stats-item", true)
+			.html(function(){
+
+				return '<strong>'+venues.length+'</strong><div class="pie-stats-label">Restaurants</div>';
+			});
 
 
 		var topVenues = _.sortBy(venues, function(d){
@@ -55,8 +85,6 @@ title: What I Ate
 		}
 		*/
 
-
-		
 		drawPie(topVenues);
 
 	}
@@ -98,6 +126,10 @@ title: What I Ate
 		    .outerRadius(radius - 16)
 		    .innerRadius(radius/3);
 
+		var arcLabelRotate = d3.svg.arc()
+		    .outerRadius(radius - 24)
+		    .innerRadius(radius - 24);
+
 		var arcHover = d3.svg.arc()
 		    .outerRadius(radius - 2)
 		    .innerRadius(0);
@@ -106,24 +138,26 @@ title: What I Ate
 		    .sort(null)
 		    .value(function(d) { return d.count; });
 
-		var svg = d3.select(".pie").append("svg")
+		var svg = d3.select(".pie")
+			.append("svg")
 		    .attr("width", width)
 		    .attr("height", height)
 		    .classed("pie-svg", true)
 		  .append("g")
 		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+		var pieColors= _.shuffle(["pastel1", "pastel3", "pastel5", "pastel7", "pastel9", "pastel2", "pastel6", "pastel8", "pastel11", "pastel12", "pastel13", "pastel14"]);
+		var pieAnimation = _.map(data, function(d, i){return d.count * 8});
+		var offset = 0;	
 	
-		  var g = svg.selectAll(".arc")
+		var g = svg.selectAll(".arc")
 		      .data(pie(data))
 		    .enter().append("g")
 		      .attr("class", "arc");
 
-		var pieColors= _.shuffle(["pastel1", "pastel3", "pastel5", "pastel7", "pastel9", "pastel2", "pastel6", "pastel8", "pastel11", "pastel12", "pastel13", "pastel14"]);
-		var pieAnimation = _.map(data, function(d, i){return d.count * 8});
-		var offset = 0;		
+		
 
-		  g.append("path")
+		g.append("path")
 		  	  .on("mouseenter", function(d){
 		      	d3.select(this).transition().duration(250).attr("d", arcHover);
 		      })
@@ -132,10 +166,12 @@ title: What I Ate
 		      })
 		      .attr("class", function(d, i) { return i < pieColors.length ? pieColors[i] : pieColors[i - pieColors.length]; })
 		      .transition().delay(function(d, i) { 
+
+
 		      	var delay = i > 0 ? offset + pieAnimation[i-1] : 0;
 
 		      	if (i>0) {
-	
+
 			      	offset += pieAnimation[i-1];
 				}
 		      	return delay;  
@@ -151,12 +187,74 @@ title: What I Ate
 			  })
 		      ;
 
+		
+		function pointIsInArc(pt, ptData, d3Arc) {
+		  // Center of the arc is assumed to be 0,0
+		  // (pt.x, pt.y) are assumed to be relative to the center
+		  var r1 = d3Arc.innerRadius()(ptData), // Note: Using the innerRadius
+		      r2 = d3Arc.outerRadius()(ptData),
+		      theta1 = d3Arc.startAngle()(ptData),
+		      theta2 = d3Arc.endAngle()(ptData);
+
+		  var dist = pt.x * pt.x + pt.y * pt.y,
+		      angle = Math.atan2(pt.x, -pt.y); // Note: different coordinate system.
+
+		  angle = (angle < 0) ? (angle + Math.PI * 2) : angle;
+
+		  return (r1 * r1 <= dist) && (dist <= r2 * r2) && 
+		         (theta1 <= angle) && (angle <= theta2);
+		}
+
 		 
-		  g.append("text")
-		      .attr("transform", function(d) { return "translate(" + arcLabel.centroid(d) + ")"; })
-		      .attr("dy", ".35em")
-		      .style("text-anchor", "middle")
-		      .text(function(d) { return d.data.label; });
+		g.append("text")
+		    .attr("transform", function(d) { return "translate(" + arcLabel.centroid(d) + ")"; })
+		    .attr("dy", ".35em")
+		    .style("text-anchor", "middle")
+		    .text(function(d) { return d.data.label; })
+		    .each(function (d) {
+		       var bb = this.getBBox(),
+		           center = arc.centroid(d);
+
+		       var topLeft = {
+		         x : center[0] + bb.x,
+		         y : center[1] + bb.y
+		       };
+
+		       var topRight = {
+		         x : topLeft.x + bb.width,
+		         y : topLeft.y
+		       };
+
+		       var bottomLeft = {
+		         x : topLeft.x,
+		         y : topLeft.y + bb.height
+		       };
+
+		       var bottomRight = {
+		         x : topLeft.x + bb.width,
+		         y : topLeft.y + bb.height
+		       };
+
+		       d.visible = pointIsInArc(topLeft, d, arc) &&
+		                   pointIsInArc(topRight, d, arc) &&
+		                   pointIsInArc(bottomLeft, d, arc) &&
+		                   pointIsInArc(bottomRight, d, arc);
+
+				if (!d.visible) {
+
+					var ang = (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
+					var start_end = (ang >= 90) ? "start" : "end";
+				    ang = (ang >= 90) ? 180 + ang : ang;
+					
+					d3.select(this).attr('transform', function () { return "translate(" + arcLabelRotate.centroid(d) + ") " +
+		                     "rotate(" + ang + ")";})
+					 	.style("text-anchor", start_end)
+					 	.html(function(d){ return d.data.label.length <= 12 ? d.data.label : d.data.label.slice(0, 12)+"..." ;});
+				}
+			})
+			.style("opacity", 0)
+			.transition().duration(250)
+			.style("opacity", 1);
 
 
 		var pieList = d3.select(".pie-list-inner");
@@ -167,15 +265,24 @@ title: What I Ate
 		pieListItems
 			.enter()
 			.append("div")
-			.attr("class", "pie-item")
-			.text(function(d){ return d.label});
+			.attr("class", "pie-item");
 
 		pieListItems
 			.exit().remove();
 
+		pieListItems
+			.append("div")
+			.attr("class", function(d, i) { return i < pieColors.length ? pieColors[i] : pieColors[i - pieColors.length]; })
+			.classed("pie-legend", true);
+
+		pieListItems
+			.append("span")
+			.classed("pie-label", true)
+			.html(function(d){ return d.label +" <strong>"+ d.count +"</strong>";});
+
+
 		//var pieListLabels = pieListItems.select
 		
-
 
 
 	}
@@ -214,7 +321,7 @@ title: What I Ate
             </a>
         </div>
 	 	<div class="user">
-        	<img src="img/me.jpg"/>
+        	<img src="img/blank_boy.png"/>
         </div>
      	<h1>Where I Ate</h1>
         
@@ -225,63 +332,37 @@ title: What I Ate
        	</div>
         
     </div>
-    <div class="content pie-chart">
-        <div class="pie-wrapper">
-        
-        	<div class="pie">
-            
-           	</div>
-        
-       	</div>
-        
-        <div class="pie-list">
-        	<div class="pie-list-inner">
-	        	<div class="pie-list-header">
-	        		Top Cuisines
-	        	</div>
 
-	        	<!--div class="pie-item">
-	        		<span class="pie-legend">1</span>
-	        		<span class="pie-label">Indian 30%</span>
+    <div class="content">
+
+	    <div class="pie-stats">
+	    	<div class="pie-stats-inner">
+				<div class="pie-list-header">
+		    		Your Stats
+		    	</div>
+		    	
+		    </div>
+		</div>
+	    <div class="pie-chart">
+	    	
+	        <div class="pie-wrapper">
+	        
+	        	<div class="pie">
+	            
+	           	</div>
+	        
+	       	</div>
+	        
+	        <div class="pie-list">
+	        	<div class="pie-list-inner">
+		        	<div class="pie-list-header">
+		        		Top Cuisines
+		        	</div>
+
+		        	 
 	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">2</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">3</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">4</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">5</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">6</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">7</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">8</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">9</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div>
-	        	<div class="pie-item">
-	        		<span class="pie-legend">10</span>
-	        		<span class="pie-label">Indian 30%</span>
-	        	</div-->
-        	</div>
-        </div>
+	        </div>
+	    </div>
     </div>
 
 </body>
