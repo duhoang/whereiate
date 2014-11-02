@@ -23,7 +23,7 @@
 	if (token) {
 		
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(data){
-			if (data.meta === 200) {
+			if (data.meta.code === 200) {
 
 				initApp(); //move this into if loop
 				
