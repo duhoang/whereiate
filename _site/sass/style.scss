@@ -365,6 +365,7 @@ html, body {
 	path {
 		stroke: $white;
 		stroke-width: 2px;
+		cursor: pointer;
 	}
 
 	text {
@@ -372,6 +373,7 @@ html, body {
 		font-size: 14px;
 		font-weight: bold;
 		fill: $white;
+		pointer-events: none;
 	}
 }
 

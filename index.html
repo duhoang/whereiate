@@ -22,17 +22,19 @@ title: What I Ate
 	var token = a.hash.split('=')[1];
 
 	var data = {% include data %};
+	var restos = {};
 	
 	if (token) {
-		
+		/*
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(data){
 			if (data.meta.code === 200) {
 
-				initApp(); //move this into if loop
+				
 				
 			}
 			
 		});
+*/
 
 		$.get("https://api.foursquare.com/v2/users/self/?oauth_token="+token+"&v=20140806", function(user){
 			if (user.meta.code === 200) {
@@ -44,32 +46,56 @@ title: What I Ate
 	}
 
 	$(function(){
-		
+		initApp(); //move this into if loop
+
+		$("#showCat").click(function(){
+
+			pieView("cat");
+		});
 	});
 	
 	function initApp() {
 
 		$("body").addClass("show-user");
 
-		var venues = getTopMetric("categories", function(c){ return c[0].shortName; });
+		var restos = getTopMetric("id");
 
-		//var venues = getTopMetric("id");
+		var pieStats = d3.select(".pie-stats-inner");
 
-		d3.select(".pie-stats-inner")
+		pieStats.selectAll(".pie-stats-item").remove();
+		
+		pieStats
 			.append("div")
 			.classed("pie-stats-item", true)
 			.html(function(){
 
 				return '<strong>'+data.response.checkins.items.length+'</strong><div class="pie-stats-label">Checkins</div>';
 			});
-		d3.select(".pie-stats-inner")
+		pieStats
 			.append("div")
 			.classed("pie-stats-item", true)
 			.html(function(){
 
-				return '<strong>'+venues.length+'</strong><div class="pie-stats-label">Restaurants</div>';
+				return '<strong>'+restos.length+'</strong><div class="pie-stats-label">Restaurants</div>';
 			});
 
+
+		pieView("categories");
+		
+	}
+
+	function pieView(type, filter) {
+
+		var venues = type === "id" ? getTopMetric("id") : getTopMetric("categories", function(c){ return c[0].shortName; });
+
+
+		if (filter) {
+
+			venues = _.filter(venues, function(d){ return d.venue["categories"][0].shortName === filter});
+
+		}
+
+		
 
 		var topVenues = _.sortBy(venues, function(d){
 			return d.count;
@@ -85,8 +111,7 @@ title: What I Ate
 		}
 		*/
 
-		drawPie(topVenues);
-
+		drawPie(topVenues, type);
 	}
 
 	function getTopMetric(metric, query) {
@@ -103,7 +128,7 @@ title: What I Ate
 				if (item) {
 					item.count++;			
 				} else {
-					venues.push({venue : d.venue, count: 1, label: query ? query(d.venue[metric]) : d.venue.name});
+					venues.push({venue : d.venue, count: 1, metric: metric, label: query ? query(d.venue[metric]) : d.venue.name});
 				}
 			}
 		});
@@ -112,7 +137,7 @@ title: What I Ate
 
 	}
 
-	function drawPie(data){
+	function drawPie(data, type){
 
 		var width = 320,
 		    height = 320,
@@ -139,6 +164,7 @@ title: What I Ate
 		    .value(function(d) { return d.count; });
 
 		var svg = d3.select(".pie")
+			.html("")
 			.append("svg")
 		    .attr("width", width)
 		    .attr("height", height)
@@ -163,6 +189,15 @@ title: What I Ate
 		      })
 		      .on("mouseleave", function(d){
 		      	d3.select(this).transition().duration(250).attr("d", arc);
+		      })
+		      .on("click", function(d){
+		      	if (d.data.metric === "categories") {
+		      		pieView("id", d.data.label);
+		      	}
+		      	else {
+		      		pieView("categories");
+		      	}
+		      	
 		      })
 		      .attr("class", function(d, i) { return i < pieColors.length ? pieColors[i] : pieColors[i - pieColors.length]; })
 		      .transition().delay(function(d, i) { 
@@ -258,6 +293,8 @@ title: What I Ate
 
 
 		var pieList = d3.select(".pie-list-inner");
+
+		pieList.selectAll(".pie-item").remove();
 
 		var pieListItems = pieList.selectAll(".pie-item")
 			.data(data)
@@ -356,7 +393,10 @@ title: What I Ate
 	        <div class="pie-list">
 	        	<div class="pie-list-inner">
 		        	<div class="pie-list-header">
-		        		Top Cuisines
+		        		<span id="showCat">
+		        			Back
+		        		</span>
+		        			Top Cuisines
 		        	</div>
 
 		        	 
