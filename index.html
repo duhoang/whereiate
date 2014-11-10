@@ -26,6 +26,9 @@ title: What I Ate
 	var lineData = [];
 	
 	if (token) {
+
+
+			
 		
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(d){
 			if (d.meta.code === 200) {
@@ -55,10 +58,12 @@ title: What I Ate
 			pieView("cat");
 		});
 
-		$(".foursquare-btn").click(function(){
-			$(this).hide();
+		if (token) {
+			$(".foursquare-btn").hide();
 			$(".loading").show();
-		});
+		}
+
+		
 	});
 	
 	function initApp() {
