@@ -6,7 +6,7 @@ title: What I Ate
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Where I Ate</title>
 <link rel="stylesheet" type="text/css" href="css/reset.css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -22,7 +22,8 @@ title: What I Ate
 	var token = a.hash.split('=')[1];
 
 	var data = {% include data %};
-	var restos = {};
+	var restos = [];
+	var lineData = [];
 	
 	if (token) {
 		/*
@@ -46,11 +47,16 @@ title: What I Ate
 	}
 
 	$(function(){
-		initApp(); //move this into if loop
+		//initApp(); //move this into if loop
 
 		$("#showCat").click(function(){
 
 			pieView("cat");
+		});
+
+		$(".foursquare-btn").click(function(){
+			$(this).hide();
+			$(".loading").show();
 		});
 	});
 	
@@ -58,7 +64,9 @@ title: What I Ate
 
 		$("body").addClass("show-user");
 
-		var restos = getTopMetric("id");
+		restos = getTopMetric("id");
+		lineData = getLineData();
+
 
 		var pieStats = d3.select(".pie-stats-inner");
 
@@ -81,7 +89,152 @@ title: What I Ate
 
 
 		pieView("categories");
+		drawGraph(lineView("month"));
 		
+	}
+
+	function lineView(sec) {
+
+		var lineGraphData = [];
+		var monthsLabel = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+		
+		_.each(lineData, function(d, i){ 
+		
+			if (i > 0 && monthsLabel[d.date.getMonth()] === _.last(lineGraphData).label ) {
+
+				var last = _.last(lineGraphData);
+				last.val++;
+
+				var temp = _.find(last.children, function(c){ return c.cuisine === d.cuisine});
+
+			
+
+				if (temp) {
+					temp.count++;
+
+				} else {
+					last.children.push(d);
+				}
+			} else {
+				lineGraphData.push({label: monthsLabel[d.date.getMonth()], date: d.date , val: 1, children:[d]});
+			
+			}
+
+			
+		});
+		return lineGraphData.reverse();
+	}
+
+	function drawGraph(lineMap){
+
+
+
+		lineMap.forEach(function(c){
+
+			c.children.sort(function(a, b) { return b.count - a.count; });
+
+			var y0 = 0;
+			c.children.forEach(function(d) {
+			  d.y0 = y0;
+			  y0+= d.count;
+			  d.y1 = y0;
+			});
+		});
+
+		var margin = {top: 32, right: 64, bottom: 64, left: 64},
+		    width = $(".linegraph-inner").width() - margin.left - margin.right,
+		    height = $(".linegraph-inner").width()/2 - margin.top - margin.bottom; 
+
+
+
+
+		//var x = d3.time.scale()
+		  //  .range([0, width]);
+
+		var x = d3.scale.ordinal()
+    		.rangeRoundBands([0, width], .4);
+
+		var y = d3.scale.linear()
+		    .rangeRound([height, 0]);
+
+		var color = d3.scale.ordinal()
+    			.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .tickSize(8, 1)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .tickSize(16, 0)
+		    .orient("left");
+
+		var line = d3.svg.line()
+		    .x(function(d) { return x(d.date); })
+		    .y(function(d) { return y(d.val); });
+
+		var svg = d3.select(".linegraph-wrap").append("svg")
+		    .attr("viewBox", ("0 0 "+ (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom)))
+		    .attr("preserveAspectRatio", "xMidYMid meet")
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		
+		   x.domain(lineMap.map(function(d) { return d.label; }));
+		   y.domain([0, d3.max(lineMap, function(d) { return d.val; }) * 1.25]);
+
+
+
+		  svg.append("g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + (height)+ ")")
+		      .call(xAxis);
+
+
+		  svg.append("g")
+		      .attr("class", "y axis")
+		      .call(yAxis);
+
+		  svg.selectAll(".bar")
+		      .data(lineMap)
+		    .enter().append("rect")
+		      .attr("class", "bar")
+		      .attr("x", function(d) { return x(d.label); })
+		      .attr("y", function(d) { return y(d.val); })
+		      .attr("height", function(d) { return height - y(d.val); })
+		      .attr("width", x.rangeBand());
+
+
+		   var bars = svg.selectAll(".bar-area")
+		      .data(lineMap)
+		    .enter().append("g")
+		      .attr("class", "bar-area")
+		      .attr("transform", function(d) { return "translate(" + x(d.label) + ", 0)"; })
+		      ;
+
+		    bars.selectAll("rect")
+		    	.data(function(d){return d.children})
+		    	.enter().append("rect")
+			      .attr("width", x.rangeBand())
+			      .attr("y", function(d) { return  y(d.y1); })
+			      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+			      ;
+
+
+/*
+		  svg.append("path")
+		      .datum(lineMap)
+		      .attr("class", "line")
+		      .attr("d", line);
+	
+
+
+		  
+
+ */	     
+	
+
 	}
 
 	function pieView(type, filter) {
@@ -114,8 +267,25 @@ title: What I Ate
 		drawPie(topVenues, type);
 	}
 
-	function getTopMetric(metric, query) {
+	function getLineData() {
 
+		var timeseries = [];
+
+		_.each(data.response.checkins.items, function(d){
+
+			if (d.venue.hasMenu) {
+
+					timeseries.push({date:new Date(d.createdAt*1000), count:1, cuisine: d.venue["categories"][0].shortName});
+			}
+
+		});
+
+		return timeseries;
+
+	}
+
+
+	function getTopMetric(metric, query) {
 		var venues = [];
 
 		_.each(data.response.checkins.items, function(d){
@@ -173,7 +343,11 @@ title: What I Ate
 		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 		var pieColors= _.shuffle(["pastel1", "pastel3", "pastel5", "pastel7", "pastel9", "pastel2", "pastel6", "pastel8", "pastel11", "pastel12", "pastel13", "pastel14"]);
-		var pieAnimation = _.map(data, function(d, i){return d.count * 8});
+
+		var total = _.reduce(data, function(memo, num){ return memo + num.count;}, 0);
+
+		
+		var pieAnimation = _.map(data, function(d, i){return d.count * (750/total)});
 		var offset = 0;	
 	
 		var g = svg.selectAll(".arc")
@@ -211,7 +385,7 @@ title: What I Ate
 				}
 		      	return delay;  
 		      })
-		      .ease("cubic-out")
+		      .ease("linear")
 		      	.duration(function(d, i) { return pieAnimation[i]; })
 			  	.attrTween('d', function(d) {
 			       var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
@@ -352,10 +526,22 @@ title: What I Ate
 
 	<div class="header">
     	<div class="foursquare-connect">
-    	<a href="https://foursquare.com/oauth2/authenticate?client_id=3WJ1E4CGYGPE0PDTABBAIOBRP02Z3TOCM2MVUVFSN5FKY4JE&response_type=token&redirect_uri=http://duhoang.github.io/whereiate/">
-            	<img src="img/foursquare-icon.png" />
-                <span>Connect to <strong>Foursquare</strong></span>
-            </a>
+    		<!--  -->
+    		<div class="foursquare-btn">
+	    	<a href="https://foursquare.com/oauth2/authenticate?client_id=3WJ1E4CGYGPE0PDTABBAIOBRP02Z3TOCM2MVUVFSN5FKY4JE&response_type=token&redirect_uri=http://duhoang.github.io/whereiate/">
+	            	<img src="img/foursquare-icon.png" />
+	                <span>Connect to <strong>Foursquare</strong></span>
+	            </a>
+	        </div>
+
+	        <div class="loading">
+	        	<svg class="loader">
+	        		
+	        		<circle cx="22" cy="22" r="20">
+
+	        		</circle>
+	        	</svg>
+	        </div>
         </div>
 	 	<div class="user">
         	<img src="img/blank_boy.png"/>
@@ -399,11 +585,16 @@ title: What I Ate
 		        			Top Cuisines
 		        	</div>
 
-		        	 
 	        	</div>
 	        </div>
 	    </div>
     </div>
+
+	<div class="linegraph-wrap">
+		<div class="linegraph-inner">
+
+		</div>
+	</div>
 
 </body>
 

@@ -334,6 +334,7 @@ html, body {
 		background: $white;
 		box-shadow: -3px 3px 0 rgba($black, .3);
 		transition: scale .25s;
+		cursor:pointer;
 		
 		&:active {
 			background: $gray2;
@@ -533,4 +534,86 @@ html, body {
 		font-size: 16px;
 	}
 
+}
+
+.linegraph-wrap {
+	background: $white;
+	padding: 16px;
+	margin-top: 80px;
+	display: none;
+
+	.show-user & {
+		display: block;
+	}
+}
+
+.linegraph-inner {
+	min-height: 320px
+
+	svg {
+		width: 100%;
+	}
+}
+
+.x.axis .tick line { 
+  fill: none;
+  stroke: black;
+  stroke-width: 1px; 
+}
+
+.bar-area {
+	rect {
+		stroke-width: 1px;
+		stroke: #ff0000;
+		fill: none;
+	}
+}
+
+.bar {
+	fill: #ffff00;
+}
+
+
+$radius: 20px;
+$pi: 3.14;
+$circumference: $radius * 2 * $pi;
+
+@include keyframes(loadingManager) {
+    0%
+       { stroke-dashoffset: $circumference; }
+    50%
+      {  stroke-dashoffset: 0 ;}
+    100%
+       { stroke-dashoffset: -$circumference;}
+
+   }
+
+.loading {
+
+	display: none;
+	img {
+		width: 40px;
+		height:40px;
+	}
+}
+
+.loader {
+	width: 44px;
+	height: 44px;
+	overflow: hidden;
+	margin: 0 auto;
+	opacity: .6;
+	circle {
+		stroke: $white;
+		stroke-width: 4px;
+		stroke-dasharray: $circumference;
+		stroke-dashoffset: 24px;
+		fill: none;
+		stroke-miterlimit: 10px;
+		transform: rotate(-90deg);
+		transform-origin: 50% 50%;
+
+
+		@include css-animate(loadingManager,2s, infinite, 0, ease);
+	}
 }

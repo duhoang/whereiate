@@ -285,7 +285,8 @@ html, body {
     display: inline-block;
     background: #ffffff;
     box-shadow: -3px 3px 0 rgba(0, 0, 0, 0.3);
-    transition: scale .25s; }
+    transition: scale .25s;
+    cursor: pointer; }
     .foursquare-connect a:active {
       background: #e2e2e2;
       color: #a7a7a7;
@@ -503,5 +504,97 @@ html, body {
     opacity: .8; }
   .pie-stats-item .pie-stats-label {
     font-size: 16px; }
+
+.linegraph-wrap {
+  background: #ffffff;
+  padding: 16px;
+  margin-top: 80px;
+  display: none; }
+  .show-user .linegraph-wrap {
+    display: block; }
+
+.linegraph-inner {
+  min-height: 320px svg;
+    min-height-width: 100%; }
+
+.x.axis .tick line {
+  fill: none;
+  stroke: black;
+  stroke-width: 1px; }
+
+.bar-area rect {
+  stroke-width: 1px;
+  stroke: #ff0000;
+  fill: none; }
+
+.bar {
+  fill: #ffff00; }
+
+@-webkit-keyframes loadingManager {
+  0% {
+    stroke-dashoffset: 125.6px; }
+  50% {
+    stroke-dashoffset: 0; }
+  100% {
+    stroke-dashoffset: -125.6px; } }
+@-moz-keyframes loadingManager {
+  0% {
+    stroke-dashoffset: 125.6px; }
+  50% {
+    stroke-dashoffset: 0; }
+  100% {
+    stroke-dashoffset: -125.6px; } }
+@-ms-keyframes loadingManager {
+  0% {
+    stroke-dashoffset: 125.6px; }
+  50% {
+    stroke-dashoffset: 0; }
+  100% {
+    stroke-dashoffset: -125.6px; } }
+@keyframes loadingManager {
+  0% {
+    stroke-dashoffset: 125.6px; }
+  50% {
+    stroke-dashoffset: 0; }
+  100% {
+    stroke-dashoffset: -125.6px; } }
+.loading {
+  display: none; }
+  .loading img {
+    width: 40px;
+    height: 40px; }
+
+.loader {
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  margin: 0 auto;
+  opacity: .6; }
+  .loader circle {
+    stroke: #ffffff;
+    stroke-width: 4px;
+    stroke-dasharray: 125.6px;
+    stroke-dashoffset: 24px;
+    fill: none;
+    stroke-miterlimit: 10px;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    animation: loadingManager linear 2s infinite;
+    -moz-animation: loadingManager linear 2s infinite;
+    -webkit-animation: loadingManager linear 2s infinite;
+    animation-delay: 0;
+    -moz-animation-delay: 0;
+    /* Firefox */
+    -webkit-animation-delay: 0;
+    /* Safari and Chrome */
+    -o-animation-delay: 0;
+    /* Opera */
+    animation-timing-function: ease;
+    -moz-animation-timing-function: ease;
+    /* Firefox */
+    -webkit-animation-timing-function: ease;
+    /* Safari and Chrome */
+    -o-animation-timing-function: ease;
+    /* Opera */ }
 
 /*# sourceMappingURL=style.css.map */
