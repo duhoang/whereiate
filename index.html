@@ -10,6 +10,7 @@ title: What I Ate
 <title>Where I Ate</title>
 <link rel="stylesheet" type="text/css" href="css/reset.css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
 
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="js/underscore-min.js" charset="utf-8"></script>
@@ -28,7 +29,7 @@ title: What I Ate
 	if (token) {
 
 
-			
+		
 		
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(d){
 			if (d.meta.code === 200) {
@@ -48,6 +49,7 @@ title: What I Ate
 			}
 			
 		});
+
 	}
 
 	$(function(){
@@ -102,10 +104,18 @@ title: What I Ate
 	function lineView(sec) {
 
 		var lineGraphData = [];
-		var monthsLabel = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+		var monthsLabel = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+		var colors= _.shuffle(["pastel1", "pastel3", "pastel5", "pastel7", "pastel9", "pastel2", "pastel6", "pastel8", "pastel11", "pastel12", "pastel13", "pastel14"]);
+
 		
+		
+		var color_i = 0;
+
 		_.each(lineData, function(d, i){ 
-		
+			
+			if (color_i >= colors.length) { color_i = 0}
+
 			if (i > 0 && monthsLabel[d.date.getMonth()] === _.last(lineGraphData).label ) {
 
 				var last = _.last(lineGraphData);
@@ -119,15 +129,21 @@ title: What I Ate
 					temp.count++;
 
 				} else {
+
+					d.color = colors[color_i++];
 					last.children.push(d);
+
 				}
 			} else {
+				d.color = colors[color_i++];
+				console.log(d.color);
 				lineGraphData.push({label: monthsLabel[d.date.getMonth()], date: d.date , val: 1, children:[d]});
 			
 			}
 
 			
 		});
+
 		return lineGraphData.reverse();
 	}
 
@@ -163,12 +179,10 @@ title: What I Ate
 		var y = d3.scale.linear()
 		    .rangeRound([height, 0]);
 
-		var color = d3.scale.ordinal()
-    			.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 		var xAxis = d3.svg.axis()
 		    .scale(x)
-		    .tickSize(8, 1)
+		    .tickSize(16, 1)
 		    .orient("bottom");
 
 		var yAxis = d3.svg.axis()
@@ -202,6 +216,7 @@ title: What I Ate
 		      .attr("class", "y axis")
 		      .call(yAxis);
 
+/*
 		  svg.selectAll(".bar")
 		      .data(lineMap)
 		    .enter().append("rect")
@@ -210,13 +225,45 @@ title: What I Ate
 		      .attr("y", function(d) { return y(d.val); })
 		      .attr("height", function(d) { return height - y(d.val); })
 		      .attr("width", x.rangeBand());
-
+*/
 
 		   var bars = svg.selectAll(".bar-area")
 		      .data(lineMap)
 		    .enter().append("g")
 		      .attr("class", "bar-area")
 		      .attr("transform", function(d) { return "translate(" + x(d.label) + ", 0)"; })
+		      .on("mouseenter", function(d){
+		      	d3.selectAll(".bar-area").classed("gray", true);
+		      	d3.select(this).classed("gray", false);
+
+		      	$(".linegraph-tally span").text(d.val+"");
+		      	$(".linegraph-list").html("");
+
+
+		      	var list_items = d3.select(".linegraph-list")
+		      		.selectAll(".lg-item")
+		      		.data(d.children)
+		      		.enter()
+	      			.append("div")
+	      			.classed("lg-item", true);
+
+	      		list_items.append("div")
+	      			.attr("class", function(d){
+	      				return d.color + " lg-legend";
+	      			});
+
+	      		list_items.append("div")
+	      			.classed("lg-label", true)
+	      			.html(function(b){
+	      				return b.cuisine +" <span>"+b.count+"</span>";
+	      			});
+
+	      		$(".linegraph-stats").addClass("show");
+		      })
+		      .on("mouseleave", function(d){
+		      	d3.selectAll(".bar-area").classed("gray", false);
+		      	$(".linegraph-stats").removeClass("show");
+		      })
 		      ;
 
 		    bars.selectAll("rect")
@@ -225,20 +272,10 @@ title: What I Ate
 			      .attr("width", x.rangeBand())
 			      .attr("y", function(d) { return  y(d.y1); })
 			      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+			      .attr("class", function(d){  return d.color;})
 			      ;
 
-
-/*
-		  svg.append("path")
-		      .datum(lineMap)
-		      .attr("class", "line")
-		      .attr("d", line);
-	
-
-
-		  
-
- */	     
+ 
 	
 
 	}
@@ -353,7 +390,7 @@ title: What I Ate
 		var total = _.reduce(data, function(memo, num){ return memo + num.count;}, 0);
 
 		
-		var pieAnimation = _.map(data, function(d, i){return d.count * (750/total)});
+		var pieAnimation = _.map(data, function(d, i){return d.count * (500/total)});
 		var offset = 0;	
 	
 		var g = svg.selectAll(".arc")
@@ -600,6 +637,15 @@ title: What I Ate
 		<div class="linegraph-inner">
 
 		</div>
+		<div class="linegraph-stats">
+			<div class="linegraph-tally">
+				<span>32</span>
+				Restaurants
+			</div>
+			<div class="linegraph-list">
+				
+			</div>
+		</div>	
 	</div>
 
 </body>

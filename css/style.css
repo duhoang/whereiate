@@ -507,25 +507,68 @@ html, body {
 
 .linegraph-wrap {
   background: #ffffff;
-  padding: 16px;
+  fill: #a7a7a7;
+  padding: 8px;
   margin-top: 80px;
-  display: none; }
+  display: none;
+  position: relative; }
   .show-user .linegraph-wrap {
     display: block; }
+  @media all and (min-width: 768px) {
+    .linegraph-wrap {
+      padding: 16px; } }
+  @media all and (min-width: 1024px) {
+    .linegraph-wrap {
+      padding: 32px; } }
 
 .linegraph-inner {
   min-height: 320px svg;
     min-height-width: 100%; }
 
-.x.axis .tick line {
-  fill: none;
-  stroke: black;
-  stroke-width: 1px; }
+.linegraph-stats {
+  position: absolute;
+  top: 8%;
+  left: 8%;
+  opacity: 0;
+  transition: opacity .25s; }
+  .linegraph-stats.show {
+    opacity: 1; }
+  @media all and (min-width: 768px) {
+    .linegraph-stats {
+      top: 10%;
+      left: 10%; } }
 
+.linegraph-tally {
+  float: left;
+  color: #12a2d9;
+  text-align: center;
+  font-weight: bold; }
+  .linegraph-tally span {
+    display: block;
+    font-size: 48px; }
+  @media all and (min-width: 1024px) {
+    .linegraph-tally {
+      font-size: 20px; }
+      .linegraph-tally span {
+        font-size: 64px; } }
+
+.axis text {
+  font-size: 14px; }
+@media all and (min-width: 1024px) {
+  .axis text {
+    font-size: 16px; } }
+.axis.x text {
+  font-weight: bold;
+  fill: #868686; }
+
+.bar-area:hover {
+  cursor: pointer; }
 .bar-area rect {
   stroke-width: 1px;
-  stroke: #ff0000;
-  fill: none; }
+  stroke: #ffffff;
+  transition: fill .25s .1s; }
+.bar-area.gray rect {
+  fill: #a7a7a7 !important; }
 
 .bar {
   fill: #ffff00; }
@@ -596,5 +639,27 @@ html, body {
     /* Safari and Chrome */
     -o-animation-timing-function: ease;
     /* Opera */ }
+
+.linegraph-list {
+  float: left;
+  color: #323232;
+  max-width: 80%;
+  font-size: 14px;
+  padding-top: 8px; }
+  .linegraph-list .lg-item {
+    display: inline-block;
+    whitespace: nowrap;
+    padding: 8px 16px 0 8px; }
+  .linegraph-list .lg-legend {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block; }
+  .linegraph-list .lg-label {
+    display: inline-block;
+    margin-left: 4px; }
+    .linegraph-list .lg-label span {
+      font-weight: bold;
+      margin-left: 4px; }
 
 /*# sourceMappingURL=style.css.map */

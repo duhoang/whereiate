@@ -538,12 +538,23 @@ html, body {
 
 .linegraph-wrap {
 	background: $white;
-	padding: 16px;
+	fill: $gray4;
+	padding: 8px;
 	margin-top: 80px;
 	display: none;
+	position: relative;
 
 	.show-user & {
 		display: block;
+	}
+
+
+	@media all and (min-width: $bp-narrow) {
+		padding: 16px;
+	}
+
+	@media all and (min-width: $bp-regular) {
+		padding: 32px;
 	}
 }
 
@@ -555,17 +566,76 @@ html, body {
 	}
 }
 
-.x.axis .tick line { 
-  fill: none;
-  stroke: black;
-  stroke-width: 1px; 
+.linegraph-stats {
+	position: absolute;
+	top: 8%;
+	left: 8%;
+	opacity: 0;
+	transition: opacity .25s;
+
+
+	&.show {
+		opacity: 1;
+	}
+
+	@media all and (min-width: $bp-narrow) {
+		top: 10%;
+		left: 10%;
+		
+	}
+
+}
+
+.linegraph-tally {
+	float: left;
+	color: $blue;
+	text-align: center;
+	font-weight:bold;
+	span {	
+		display:block;
+		font-size: 48px;
+	}
+
+	@media all and (min-width: $bp-regular) {
+		span {	
+			font-size: 64px;
+		}
+		font-size: 20px;
+	}
+}
+
+.axis { 
+	text {
+		font-size: 14px;
+	}
+
+	@media all and (min-width: $bp-regular) {
+		text {
+			font-size: 16px;
+		}
+	}
+
+	&.x {
+		text {
+			font-weight: bold;
+			fill: $gray5;
+		}
+	}
 }
 
 .bar-area {
+	&:hover {
+		cursor: pointer;
+	}
+
 	rect {
 		stroke-width: 1px;
-		stroke: #ff0000;
-		fill: none;
+		stroke: $white;
+		transition: fill .25s .1s;
+	}
+
+	&.gray rect{
+		fill: $gray4 !important;
 	}
 }
 
@@ -615,5 +685,36 @@ $circumference: $radius * 2 * $pi;
 
 
 		@include css-animate(loadingManager,2s, infinite, 0, ease);
+	}
+}
+
+.linegraph-list {
+	float:left;
+	color: $gray8;
+	max-width: 80%;
+	font-size: 14px;
+	padding-top: 8px;
+	
+
+	.lg-item {
+		display:inline-block;
+		whitespace: nowrap;
+		padding: 8px 16px 0 8px;
+	}
+
+	.lg-legend {
+		width: 12px;
+		height: 12px;
+		border-radius:50%;
+		display: inline-block;
+	}
+	.lg-label {
+		display: inline-block;
+		margin-left: 4px;
+
+		span {
+			font-weight:bold;
+			margin-left: 4px;
+		}
 	}
 }
