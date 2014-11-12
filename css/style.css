@@ -678,7 +678,10 @@ html, body {
 
 .feedback {
   background: #ffffff;
-  padding: 64px 16px 0; }
+  padding: 64px 16px 0;
+  display: none; }
+  .show-user .feedback {
+    display: block; }
   .feedback .feedback-inner {
     max-width: 640px;
     margin: 0 auto;

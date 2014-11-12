@@ -738,6 +738,11 @@ $circumference: $radius * 2 * $pi;
 .feedback {
 	background: $white;
 	padding: 64px 16px 0;
+	display: none;
+
+	.show-user & {
+		display:block;
+	}
 
 	.feedback-inner {
 		max-width: 640px;
