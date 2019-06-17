@@ -22,7 +22,7 @@
 	var data;
 	var restos = [];
 	var lineData = [];
-	
+	//test
 	if (token) {
 		
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(d){
@@ -132,7 +132,7 @@
 				}
 			} else {
 				d.color = colors[color_i++];
-				console.log(d.color);
+				//console.log(d.color);
 				lineGraphData.push({label: monthsLabel[d.date.getMonth()], date: d.date , val: 1, children:[d]});
 			
 			}
