@@ -22,11 +22,11 @@
 	var data;
 	var restos = [];
 	var lineData = [];
-	//test
+	//test2
 	if (token) {
-		
+		debugger;
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(d){
-			debugger;
+			
 			if (d.meta.code === 200) {
 				data= d;
 				initApp();	
