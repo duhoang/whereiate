@@ -18,15 +18,15 @@
 	var url = window.location;
 	var a = $('<a>', { href:url } )[0];
 	var token = a.hash.split('=')[1];
-
+	console.log(token)
 	var data;
 	var restos = [];
 	var lineData = [];
 	//test2
 	if (token) {
-		debugger;
+		console.log("2asdfas:",token);
 		$.get("https://api.foursquare.com/v2/users/self/checkins?oauth_token="+token+"&v=20140806&m=foursquare&afterTimestamp=1388552400&limit=250", function(d){
-			
+			debugger;
 			if (d.meta.code === 200) {
 				data= d;
 				initApp();	
